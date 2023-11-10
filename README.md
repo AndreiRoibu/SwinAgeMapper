@@ -1,109 +1,82 @@
 # SwinAgeMapper
 
 
-This project looks at employing different neuroimaging modalities to understand patterns of brain ageging and factors influencing it.
+This project looks at employing different neuroimaging modalities to understand patterns of brain ageging and factors influencing it. It represents the first ever use of SWIN Transformers for this task. For any issues, please contact Andrei Roibu at andrei-claudiu.roibu@dtc.ox.ac.uk. 
+
+The code is still undergoing modifications and further additions will be made in the coming period.
+
+This work is a continuation of the work conducted in AgeMapper: https://github.com/AndreiRoibu/AgeMapper
+
+## Motivation (From PhD Thesis)
+
+This repository houses the code and methodologies from the final chapter of my PhD thesis, which introduces a novel approach in predicting brain age using Shifted Window (SWIN) Transformers. The study explores the limitations of traditional Convolutional Neural Networks (CNNs) in medical imaging, particularly in modeling contextual information crucial for understanding brain ageing processes. 
+
+In this repo, I present the Brain Age SWIN (BA-SWIN) network, a specialized SWIN-based architecture designed for brain age prediction. Unlike CNNs, BA-SWIN utilizes a unique approach of partitioning images into multiple non-overlapping patches, each independently processed with attention mechanisms. This method not only enhances performance but also provides a level of explainability previously unattainable in CNNs. The BA-SWIN networks were tested against CNNs in brain-age prediction tasks, showing comparable accuracy but excelling in identifying novel associations to non-imaging derived phenotypes (nIDPs) for certain contrasts. Additionally, the SWIN networks demonstrated superior resilience in handling corrupted data, especially when pretrained on high-quality datasets like UK Biobank.
+
+## Network Architecture & Pre-Trained Networks
+
+
+## Subject Datasets and Contrast Information
+
+To access the datasets utilised for training these networks, see the various text and numpy files in the __datasets__ folder in this repository. The actual MRI scans are available upon application from the [UK Biobank](https://www.ukbiobank.ac.uk), such as all the other data utilised in this project. 
+
+In the __datasets__ there is also a file named __scaling_values_simple.csv__. This CSV file contains information on the name of each of the contrasts, the scale factor utilised during data pre-processing, the resolution of the MRI files, and the internal UK Biobank file handle marking where the file can be found for each subject.
+
+## Correlations to UK Biobank nIDPs
+
+One of the major findings of this work has been that all contrasts correlate significantly and differently with a large number of nIDPs from the UK Biobank. The correlations and the information for accessing the data is made freely available for the research community to further investigate. All the correlations can be accessed at on ***LINK TO BE ADDED LATER*** This collection contains both the full correlation, very large files, as well as smaller files, containing only the statistically significant associations. 
+
+## Installation & Usage
+To download and run this code as python files, you can clone this repository using git:
+
+```bash
+git clone <link to repo>
+```
+
+In order to install the required packages, the user will need the presence of Python3 and the [pip3](https://pip.pypa.io/en/stable/) installer. 
+
+For installation on Linux or OSX, use the following commands. This will create a virtual environment and automatically install all the requirements, as well as create the required metadata
+
+```bash
+./setup.sh
+```
+
+In order to run the code, activate the previously installed virtual environment, and utilise the run file. Several steps are needed prior to that:
+* make a copy of the __settings.ini__ and __settings_eval.ini__ files, filling out the required settings. If running an evaluation, make sure that the pre-trained network name corresponds to the experiment names
+* rename the two __ini__ files to either the pre-trained network name, or to something else
+
+This approach has been used given the large number of hyperparameters and network-subject sex-MRI modality combinations.
+
+After setting up, activate your environment using the following code:
+
+```bash
+~/(usr)$ source env/bin/activate
+```
+
+For running network training epochs, utilise this code, setting TASK='train' (or test), NAME='name_of_your_ini_files', CHECKPOINT='0' (or some other value if wishing to start from a later checkpoint), and EPOCHS='number_of_epochs_you_want_to_train_for'. For more details on these inputs, see the __run.py__ file.
+
+```bash
+~/(usr)$ python run.py -m ${TASK} -n ${NAME} -c ${CHECKPOINT} -e ${EPOCHS}
+```
+
 
 ## References
-In the creation of this code, material was used from the project [MONAI](https://monai.io/index.html) and the following paper. The original code can be accessed on [GitHub](https://github.com/Project-MONAI/research-contributions/tree/main/SwinUNETR)
+
+The work presented in this repository is under consideration for publication. In place of a paper, please cite the below paper that the author has published at the 2023 10th Swiss Conferece on Data Science (SDS). The paper can be accessed at on [IEEE](https://ieeexplore.ieee.org/abstract/document/10196736). To reference this work, please use the following citation. This paper reference prior work the author has done on the topic of brain ageing, and relates to the AgeMapper repository.
 
 ```
-@inproceedings{hatamizadeh2022swin,
-  title={Swin unetr: Swin transformers for semantic segmentation of brain tumors in mri images},
-  author={Hatamizadeh, Ali and Nath, Vishwesh and Tang, Yucheng and Yang, Dong and Roth, Holger R and Xu, Daguang},
-  booktitle={Brainlesion: Glioma, Multiple Sclerosis, Stroke and Traumatic Brain Injuries: 7th International Workshop, BrainLes 2021, Held in Conjunction with MICCAI 2021, Virtual Event, September 27, 2021, Revised Selected Papers, Part I},
-  pages={272--284},
-  year={2022},
-  organization={Springer}
-}
+@inproceedings{roibu2023brain,
+  title={Brain Ages Derived from Different MRI Modalities are Associated with Distinct Biological Phenotypes},
+  author={Roibu, Andrei-Claudiu and Adaszewski, Stanislaw and Schindler, Torsten and Smith, Stephen M and Namburete, Ana IL and Lange, Frederik J},
+  booktitle={2023 10th IEEE Swiss Conference on Data Science (SDS)},
+  pages={17--25},
+  year={2023},
+  organization={IEEE},
+  doi={10.1109/SDS57534.2023.00010}}
 ```
-
-
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.fmrib.ox.ac.uk/aroibu/SwinAgeMapper.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://git.fmrib.ox.ac.uk/aroibu/SwinAgeMapper/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Licence
+[BSD 3-Clause Licence](https://opensource.org/licenses/BSD-3-Clause) © [Andrei Roibu](https://github.com/AndreiRoibu)
